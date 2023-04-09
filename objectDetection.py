@@ -1,12 +1,11 @@
-from __future__ import print_function
 import cv2 as cv
 import argparse
 
 def detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade):
+    expressions = []
     frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     frame_gray = cv.equalizeHist(frame_gray)
 
-    # Detect faces
     faces = face_cascade.detectMultiScale(frame_gray)
     for (x, y, w, h) in faces:
         center = (x + w//2, y + h//2)
@@ -14,19 +13,21 @@ def detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade):
 
         faceROI = frame_gray[y:y+h,x:x+w]
 
-        # Detect smiles
         smiles = smile_cascade.detectMultiScale(faceROI, scaleFactor=1.8, minNeighbors=20)
         for (sx, sy, sw, sh) in smiles:
             cv.rectangle(frame, (x+sx, y+sy), (x+sx+sw, y+sy+sh), (0, 0, 255), 2)
+            expressions.append('smile')
 
-        # Detect eyes
         eyes = eyes_cascade.detectMultiScale(faceROI)
         for (ex, ey, ew, eh) in eyes:
             eye_center = (x + ex + ew//2, y + ey + eh//2)
             radius = int(round((ew + eh)*0.25))
             frame = cv.circle(frame, eye_center, radius, (255, 0, 0 ), 4)
+            expressions.append('eyes')
 
     cv.imshow('Capture - Face detection', frame)
+
+    return expressions
 
 def main():
     parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
@@ -53,7 +54,9 @@ def main():
             print('--(!) No captured frame -- Break!')
             break
 
-        detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade)
+        expressions = detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade)
+        if expressions:
+            print('Expressions detected:', ', '.join(expressions))
 
         if cv.waitKey(10) == 27:
             break
