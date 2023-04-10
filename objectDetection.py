@@ -45,13 +45,13 @@ def main():
     cap = cv.VideoCapture(camera_device)
 
     if not cap.isOpened():
-        print('--(!)Error opening video capture')
+        print('--Error opening video capture')
         exit(0)
 
     while True:
         ret, frame = cap.read()
         if frame is None:
-            print('--(!) No captured frame -- Break!')
+            print('--No captured frame -- Break!')
             break
 
         expressions = detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade)
