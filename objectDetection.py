@@ -32,7 +32,19 @@ def detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade):
     contours, hierarchy = cv.findContours(dilated, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     redLower = (0, 50, 50)
     redUpper = (10, 255, 255)
-
+    for contour in contours:
+        area = cv.contourArea(contour)
+        if area > 1000:
+            (x, y, w, h) = cv.boundingRect(contour)
+            if w > h and w / h > 2:
+                # Verify red
+                roi = frame[y:y + h, x:x + w]
+                hsv = cv.cvtColor(roi, cv.COLOR_BGR2HSV)
+                mask = cv.inRange(hsv, redLower, redUpper)
+                red_pixels = cv.countNonZero(mask)
+                if red_pixels > 500:
+                    cv.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                    expressions.append('bottle')
 
     cv.imshow('Capture - Face detection', frame)
 
