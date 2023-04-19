@@ -30,6 +30,8 @@ def detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade):
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
     dilated = cv.dilate(edges, kernel, iterations=1)
     contours, hierarchy = cv.findContours(dilated, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    redLower = (0, 50, 50)
+    redUpper = (10, 255, 255)
 
 
     cv.imshow('Capture - Face detection', frame)
