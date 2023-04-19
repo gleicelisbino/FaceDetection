@@ -26,9 +26,10 @@ def detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade):
             expressions.append('eyes')
 
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-
     edges = cv.Canny(gray, 50, 150)
-
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
+    dilated = cv.dilate(edges, kernel, iterations=1)
+    contours, hierarchy = cv.findContours(dilated, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
 
     cv.imshow('Capture - Face detection', frame)
