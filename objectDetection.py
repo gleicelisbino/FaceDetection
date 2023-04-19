@@ -25,6 +25,12 @@ def detectAndDisplay(frame, face_cascade, eyes_cascade, smile_cascade):
             frame = cv.circle(frame, eye_center, radius, (255, 0, 0 ), 4)
             expressions.append('eyes')
 
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+
+    edges = cv.Canny(gray, 50, 150)
+
+
+
     cv.imshow('Capture - Face detection', frame)
 
     return expressions
